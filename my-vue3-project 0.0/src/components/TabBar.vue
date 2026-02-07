@@ -14,7 +14,7 @@
       @tap="switchToFeedback"
     >
       <view class="tab-icon">👤</view>
-      <view class="tab-text">反馈</view>
+      <view class="tab-text">用户</view>
     </view>
   </view>
 </template>
@@ -43,7 +43,7 @@ const switchToFeedback = () => {
   if (props.current !== 1) {
     try {
       uni.reLaunch({
-        url: '/pages/feedback/feedback'
+        url: '/pages/user/user'
       })
     } catch (err) {
       console.error('跳转失败', err)

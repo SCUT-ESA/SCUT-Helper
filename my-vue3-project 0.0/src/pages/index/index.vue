@@ -1,11 +1,7 @@
 <template>
   <view class="page">
-    <!-- 每日抽签卡片 -->
-    <view class="daily-draw" @tap="handleDailyDraw">
-      <view class="draw-icon">🎡</view>
-      <view class="draw-text">每日抽签</view>
-      <view class="draw-icon">🎡</view>
-    </view>
+	<!-- 每日抽签卡片 -->
+	<dailyDraw></dailyDraw>
     
     <!-- 底部导航栏 -->
     <TabBar :current="0" />
@@ -51,6 +47,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import TabBar from '@/components/TabBar.vue'
+import dailyDraw from "@/components/dailyDraw/dailyDraw.vue"
 
 // 常用功能列表
 const commonFunctions = ref([
@@ -79,25 +76,16 @@ const moreFunctions = ref([
 ])
 
 
-// 处理每日抽签点击
-const handleDailyDraw = () => {
-  uni.showToast({
-    title: '每日抽签功能',
-    icon: 'none',
-    duration: 2000
-  })
-}
-
-// 处理功能点击 - 统一复制链接到剪贴板
-const handleFunctionClick = (item) => {
-  if (!item.url || item.type === 'none') {
-    uni.showToast({
-      title: item.name,
-      icon: 'none',
-      duration: 2000
-    })
-    return
-  }
+  // 处理功能点击 - 统一复制链接到剪贴板
+  const handleFunctionClick = (item) => {
+    if (!item.url || item.type === 'none') {
+      uni.showToast({
+        title: item.name,
+        icon: 'none',
+        duration: 2000
+      })
+      return
+    }
 
   // 所有链接都复制到剪贴板
   uni.setClipboardData({
@@ -123,36 +111,13 @@ const handleFunctionClick = (item) => {
 
 
 <style lang="scss" scoped>
+	
 .page {
   min-height: 100vh;
   background-color: #f5f5f5;
   padding: 32rpx;
   padding-bottom: 160rpx; // 为底部导航栏留出空间
   box-sizing: border-box;
-}
-
-/* 每日抽签卡片 */
-.daily-draw {
-  background: linear-gradient(135deg, #b794f6 0%, #9f7aea 100%);
-  border-radius: 32rpx;
-  padding: 48rpx;
-  margin-bottom: 48rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 32rpx;
-  box-shadow: 0 8rpx 24rpx rgba(183, 148, 246, 0.3);
-}
-
-.draw-icon {
-  width: 64rpx;
-  height: 64rpx;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 40rpx;
 }
 
 .draw-text {

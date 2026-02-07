@@ -1,5 +1,12 @@
 <template>
   <view class="page">
+	<!-- 登录系统 -->
+	<view class="feedback-section">
+		<view class="feedback-box text-center-blue" @tap="switchToRegister">
+		  用户登录
+		</view>
+	</view>
+	
     <!-- 联系我们 -->
     <view class="feedback-section">
       <view class="feedback-title">联系我们</view>
@@ -42,6 +49,17 @@
 <script setup>
 import { onMounted } from 'vue'
 import TabBar from '@/components/TabBar.vue'
+
+// 跳转到登录页面
+const switchToRegister = () => {
+    try {
+      uni.reLaunch({
+        url: '../../components/register/register'
+      })} catch (err) {
+      console.error('跳转失败', err)
+    }
+  }
+
 
 
 // 复制博客地址
@@ -128,6 +146,12 @@ const handleFeedback = () => {
 
 .feedback-box.green {
   background: linear-gradient(135deg, #68d391 0%, #48bb78 100%);
+}
+
+
+.feedback-box.text-center-blue {
+  text-align: center;
+  background: linear-gradient(135deg, #90cdf4 0%, #63b3ed 100%);
 }
 
 .br {

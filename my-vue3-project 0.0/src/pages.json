@@ -10,7 +10,7 @@
 			}
 		},
 		{
-			"path": "pages/feedback/feedback",
+			"path": "pages/user/user",
 			"style": {
 				"navigationBarTitleText": "鲤工助手",
 				"navigationBarBackgroundColor": "#ffffff",
@@ -25,6 +25,21 @@
 				"navigationBarBackgroundColor": "#ffffff",
 				"navigationBarTextStyle": "black",
 				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "components/register/register",
+			"style": {
+				"navigationBarTitleText": "欢迎登陆",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "components/dailyDraw/dailyDraw",
+			"style": {
+				"navigationBarTitleText": ""
 			}
 		}
 	],
