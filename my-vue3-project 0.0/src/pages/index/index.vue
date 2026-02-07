@@ -1,5 +1,6 @@
 <template>
   <view class="page">
+	  
 	<!-- 每日抽签卡片 -->
 	<dailyDraw></dailyDraw>
     
