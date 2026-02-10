@@ -117,7 +117,7 @@ const getWeightedRandom = (list, isActivity = false) => {
 const handleDailyDraw = () => {
 	if (hasDrawn.value) return 
 	
-	uni.showLoading({ title: '正在求签...', mask: true })
+	uni.showLoading({ title: '请等待...', mask: true })
 	
 	setTimeout(() => {
 		// A. 算出运势等级

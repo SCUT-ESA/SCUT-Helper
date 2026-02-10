@@ -28,18 +28,27 @@
 			}
 		},
 		{
-			"path": "components/register/register",
+			"path": "components/dailyDraw/dailyDraw",
 			"style": {
-				"navigationBarTitleText": "欢迎登陆",
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/register/register",
+			"style": {
+				"navigationBarTitleText": "登陆成功",
 				"navigationBarBackgroundColor": "#ffffff",
 				"navigationBarTextStyle": "black",
 				"enablePullDownRefresh": false
 			}
 		},
 		{
-			"path": "components/dailyDraw/dailyDraw",
+			"path": "pages/login/login",
 			"style": {
-				"navigationBarTitleText": ""
+				"navigationBarTitleText": "欢迎登陆",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false
 			}
 		}
 	],

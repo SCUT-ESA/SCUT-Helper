@@ -2,7 +2,7 @@
   <view class="page">
 	<!-- 登录系统 -->
 	<view class="feedback-section">
-		<view class="feedback-box text-center-blue" @tap="switchToRegister">
+		<view class="feedback-box text-center-blue" @tap="switchToLogin">
 		  用户登录
 		</view>
 	</view>
@@ -51,10 +51,10 @@ import { onMounted } from 'vue'
 import TabBar from '@/components/TabBar.vue'
 
 // 跳转到登录页面
-const switchToRegister = () => {
+const switchToLogin = () => {
     try {
       uni.reLaunch({
-        url: '../../components/register/register'
+        url: '../login/login'
       })} catch (err) {
       console.error('跳转失败', err)
     }
