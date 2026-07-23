@@ -10,6 +10,19 @@
 			}
 		},
 		{
+			"path": "pages/agent/agent",
+			"style": {
+				"navigationBarTitleText": "华工智能体",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"softinputMode": "adjustPan",
+					"bounce": "none"
+				}
+			}
+		},
+		{
 			"path": "pages/user/user",
 			"style": {
 				"navigationBarTitleText": "鲤工助手",
@@ -19,12 +32,66 @@
 			}
 		},
 		{
-			"path": "pages/webview/webview",
+			"path": "pages/timetable/timetable",
 			"style": {
-				"navigationBarTitleText": "网页",
+				"navigationBarTitleText": "我的课表",
 				"navigationBarBackgroundColor": "#ffffff",
 				"navigationBarTextStyle": "black",
 				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/art/art",
+			"style": {
+				"navigationBarTitleText": "立绘鉴赏",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
+		},
+		{
+			"path": "pages/emoji/emoji",
+			"style": {
+				"navigationBarTitleText": "Emoji 表情包",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
+		},
+		{
+			"path": "pages/webview/webview",
+			"style": {
+				"navigationBarTitleText": "跳转网页",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/webvpn/webvpn",
+			"style": {
+				"navigationBarTitleText": "校园服务",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": {
+						"buttons": [
+							{
+								"text": "进入",
+								"fontSize": "14px",
+								"color": "#0770cd",
+								"width": "auto"
+							}
+						]
+					}
+				}
 			}
 		},
 		{
@@ -50,6 +117,33 @@
 				"navigationBarTextStyle": "black",
 				"enablePullDownRefresh": false
 			}
+		},
+		{
+			"path": "pages/import/import",
+			"style": {
+				"navigationBarTitleText": "导入课表",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": {
+						"buttons": [
+							{
+								"text": "提取课表",
+								"fontSize": "14px",
+								"color": "#0770cd",
+								"width": "auto"
+							},
+							{
+								"text": "进课表",
+								"fontSize": "14px",
+								"color": "#0770cd",
+								"width": "auto"
+							}
+						]
+					}
+				}
+			}
 		}
 	],
 	"globalStyle": {
@@ -57,5 +151,40 @@
 		"navigationBarTitleText": "鲤工助手",
 		"navigationBarBackgroundColor": "#ffffff",
 		"backgroundColor": "#f5f5f5"
+	},
+	"tabBar": {
+		"color": "#666666",
+		"selectedColor": "#529bcc",
+		"backgroundColor": "#ffffff",
+		"borderStyle": "black",
+		"fontSize": "13px",
+		"iconWidth": "36px",
+		"height": "64px",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"text": "首页",
+				"iconPath": "static/tab/home.jpg",
+				"selectedIconPath": "static/tab/home.jpg"
+			},
+			{
+				"pagePath": "pages/agent/agent",
+				"text": "智能体",
+				"iconPath": "static/tab/agent.jpg",
+				"selectedIconPath": "static/tab/agent.jpg"
+			},
+			{
+				"pagePath": "pages/user/user",
+				"text": "用户",
+				"iconPath": "static/tab/user.jpg",
+				"selectedIconPath": "static/tab/user.jpg"
+			},
+			{
+				"pagePath": "pages/timetable/timetable",
+				"text": "课表",
+				"iconPath": "static/tab/timetable.jpg",
+				"selectedIconPath": "static/tab/timetable.jpg"
+			}
+		]
 	}
 }

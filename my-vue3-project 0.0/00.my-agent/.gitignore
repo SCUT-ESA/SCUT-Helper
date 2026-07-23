@@ -1,0 +1,27 @@
+# 密钥与本地环境（切勿提交）
+.env
+.env.local
+.env.*.local
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# 向量库构建产物（体积大，需本地用 build_vectordb.py 生成）
+vectordb/
+
+# 编辑器 / 系统
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+
+# 杂项
+电脑

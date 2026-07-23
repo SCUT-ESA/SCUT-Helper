@@ -11,6 +11,19 @@ node_modules
 .DS_Store
 dist
 *.local
+unpackage/dist/
+
+# Agent 密钥与本地环境
+00.my-agent/.env
+00.my-agent/.env.local
+00.my-agent/venv/
+00.my-agent/.venv/
+00.my-agent/__pycache__/
+00.my-agent/vectordb/
+
+# 宣传动画渲染缓存 / 成片（成片见 B 站）
+01.动画/media/
+01.动画/__pycache__/
 
 # Editor directories and files
 .idea

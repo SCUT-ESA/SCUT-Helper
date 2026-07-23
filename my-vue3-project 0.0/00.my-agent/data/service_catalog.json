@@ -1,0 +1,104 @@
+{
+  "home": {
+    "title": "首页签到",
+    "type": "switch_tab",
+    "path": "/pages/index/index",
+    "aliases": ["首页", "签到", "每日签到", "我要签到", "打开首页", "去签到"]
+  },
+  "timetable": {
+    "title": "我的课表",
+    "type": "switch_tab",
+    "path": "/pages/timetable/timetable",
+    "aliases": ["课表", "我的课表", "打开课表", "看课表"]
+  },
+  "art": {
+    "title": "立绘鉴赏",
+    "type": "navigate_to",
+    "path": "/pages/art/art",
+    "aliases": ["立绘", "关于立绘", "看立绘", "形象", "小姐姐", "智能体形象", "华工助手形象"]
+  },
+  "emoji": {
+    "title": "Emoji 表情包",
+    "type": "navigate_to",
+    "path": "/pages/emoji/emoji",
+    "aliases": ["emoji", "表情包", "表情", "看表情", "Emojis"]
+  },
+  "contact": {
+    "title": "联系开发者",
+    "type": "switch_tab",
+    "path": "/pages/user/user",
+    "aliases": ["联系开发者", "联系我们", "开发者", "联系作者"]
+  },
+  "help": {
+    "title": "使用说明",
+    "type": "open_webview",
+    "url": "https://dcnmcid6v0ct.feishu.cn/wiki/Yvxzwo85hieZTBkbKdhcvyy2nMe?from=from_copylink",
+    "aliases": ["使用说明", "怎么操作", "怎么用", "操作说明", "帮助"]
+  },
+  "feedback": {
+    "title": "一键反馈",
+    "type": "open_webview",
+    "url": "https://dcnmcid6v0ct.feishu.cn/wiki/RFEbw4pV8iP6IUkiAzMcmBwKn7c",
+    "aliases": ["反馈", "一键反馈", "我要反馈", "提意见", "意见反馈"]
+  },
+  "grade": {
+    "title": "查分",
+    "type": "open_campus_web",
+    "url": "https://xsjw2018-jw.webvpn.scut.edu.cn/jwglxt/cjcx/cjcx_cxDgXscj.html?gnmkdm=N305005&layout=default",
+    "aliases": ["查分", "查成绩", "成绩", "分数"]
+  },
+  "gpa": {
+    "title": "GPA",
+    "type": "open_campus_web",
+    "url": "https://xsjw2018-jw.webvpn.scut.edu.cn/jwglxt/design/viewFunc_cxDesignFuncPageIndex.html?gnmkdm=N3091hg05&layout=default",
+    "aliases": ["GPA", "绩点", "平均学分绩点"]
+  },
+  "course_select": {
+    "title": "自主选课",
+    "type": "open_campus_web",
+    "url": "https://xsjw2018-jw.webvpn.scut.edu.cn/jwglxt/xsxk/zzxkyzb_cxZzxkYzbIndex.html?gnmkdm=N253512&layout=default",
+    "aliases": ["自主选课", "选课", "去选课"]
+  },
+  "jw_home": {
+    "title": "教务系统",
+    "type": "open_campus_web",
+    "url": "https://xsjw2018-jw.webvpn.scut.edu.cn/jwglxt/xtgl/index_initMenu.html?jsdm=xs&_t=1769041397669&echarts=1",
+    "aliases": ["教务系统", "教务", "打开教务"]
+  },
+  "webvpn": {
+    "title": "WebVPN",
+    "type": "open_campus_web",
+    "url": "https://webvpn.scut.edu.cn/",
+    "aliases": ["VPN", "WebVPN", "校园VPN"]
+  },
+  "ecourse": {
+    "title": "课程中心",
+    "type": "open_campus_web",
+    "url": "https://ecourse.scut.edu.cn",
+    "aliases": ["课程中心", "e课程", "网络课程"]
+  },
+  "ecard": {
+    "title": "一卡通",
+    "type": "open_campus_web",
+    "url": "https://ecardwxnew.scut.edu.cn/plat/shouyeUser",
+    "aliases": ["一卡通", "校园卡"]
+  },
+  "jw_office": {
+    "title": "教务处",
+    "type": "open_campus_web",
+    "url": "https://jw.scut.edu.cn/zhinan/cms/index.do",
+    "aliases": ["教务处", "教务处网站"]
+  },
+  "cnki": {
+    "title": "知网资源",
+    "type": "open_campus_web",
+    "url": "https://www-cnki-net-443.webvpn.scut.edu.cn/",
+    "aliases": ["知网", "CNKI"]
+  },
+  "wanfang": {
+    "title": "万方资源",
+    "type": "open_campus_web",
+    "url": "https://www-wanfangdata-com-cn-443.webvpn.scut.edu.cn/index.html",
+    "aliases": ["万方"]
+  }
+}

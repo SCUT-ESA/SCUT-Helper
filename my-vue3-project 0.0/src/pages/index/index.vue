@@ -1,11 +1,7 @@
 <template>
   <view class="page">
-	  
-	<!-- 每日抽签卡片 -->
+	<!-- 每日签到卡片 -->
 	<dailyDraw></dailyDraw>
-    
-    <!-- 底部导航栏 -->
-    <TabBar :current="0" />
 
     <!-- 常用功能 -->
     <view class="section">
@@ -46,14 +42,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import TabBar from '@/components/TabBar.vue'
+import { ref } from 'vue'
 import dailyDraw from "@/components/dailyDraw/dailyDraw.vue"
+import { openCampusWeb } from '@/utils/webvpn.js'
 
 // 常用功能列表
 const commonFunctions = ref([
   { name: '课程中心', icon: '📚', url: 'https://ecourse.scut.edu.cn', type: 'web' },
-  { name: '资料', icon: '📄', url: 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=Mzg3NjgzMjI5OA==', type: 'web' },
+  { name: '资料', icon: '📄', url: 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=Mzg3NjgzMjI5OA==', type: 'copy' },
   { name: '猹话会', icon: '💬', url: '#小程序://猹话会/xmyq4nuqwlMg5lp', type: 'miniprogram' },
   { name: 'VPN', icon: '🔒', url: 'https://webvpn.scut.edu.cn/', type: 'web' },
   { name: '一卡通', icon: '🪪', url: 'https://ecardwxnew.scut.edu.cn/plat/shouyeUser', type: 'web' },
@@ -66,8 +62,8 @@ const commonFunctions = ref([
 
 // 更多功能列表
 const moreFunctions = ref([
-  { name: '公众号', icon: '💭', url: 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzA5NDQ1NzE5Ng==', type: 'web' },
-  { name: '校园地图', icon: '📍', url: 'https://map.scut.edu.cn/login_home.html', type: 'web' },
+  { name: '公众号', icon: '💭', url: 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzA5NDQ1NzE5Ng==', type: 'copy' },
+  { name: '校园地图', icon: '📍', url: 'https://map.scut.edu.cn/login_home.html', type: 'copy' },
   { name: '查分', icon: '🔍', url: 'https://xsjw2018-jw.webvpn.scut.edu.cn/jwglxt/cjcx/cjcx_cxDgXscj.html?gnmkdm=N305005&layout=default', type: 'web' },
   { name: 'GPA', icon: '💯', url: 'https://xsjw2018-jw.webvpn.scut.edu.cn/jwglxt/design/viewFunc_cxDesignFuncPageIndex.html?gnmkdm=N3091hg05&layout=default', type: 'web' },
   { name: '教材订购', icon: '📥', url: '#小程序://通读大中专/mCuEWIwyvx5Wj0H', type: 'miniprogram' },
@@ -77,36 +73,70 @@ const moreFunctions = ref([
 ])
 
 
-  // 处理功能点击 - 统一复制链接到剪贴板
+  // 在 <script setup> 中定义
+  const lastTap = ref(null)          // 记录上一次点击的项目和时间
+  let tapTimeout = null               // 单击延迟跳转的定时器
+  
   const handleFunctionClick = (item) => {
+    // 占位项或无链接处理
     if (!item.url || item.type === 'none') {
-      uni.showToast({
-        title: item.name,
-        icon: 'none',
-        duration: 2000
+      uni.showToast({ title: item.name, icon: 'none', duration: 2000 })
+      return
+    }
+  
+    // 判断是否为网址（http:// 或 https:// 开头）
+    const isWebUrl = /^https?:\/\//.test(item.url)
+  
+    // 非网址，或显式指定 type=copy：单击直接复制（与选课通等一致）
+    if (!isWebUrl || item.type === 'copy') {
+      uni.setClipboardData({
+        data: item.url,
+        success: () => {
+          uni.showToast({ title: '链接已复制', icon: 'success', duration: 2000 })
+        },
+        fail: () => {
+          uni.showToast({ title: '复制失败', icon: 'none', duration: 2000 })
+        }
       })
       return
     }
-
-  // 所有链接都复制到剪贴板
-  uni.setClipboardData({
-    data: item.url,
-    success: () => {
-      uni.showToast({
-        title: '链接已复制',
-        icon: 'success',
-        duration: 2000
+  
+    // 以下是网址的处理：双击复制，单击跳转
+    const now = Date.now()
+  
+    // 双击检测
+    if (lastTap.value && lastTap.value.item === item && now - lastTap.value.time < 300) {
+      if (tapTimeout) {
+        clearTimeout(tapTimeout)
+        tapTimeout = null
+      }
+      uni.setClipboardData({
+        data: item.url,
+        success: () => {
+          uni.showToast({ title: '链接已复制', icon: 'success', duration: 2000 })
+        },
+        fail: () => {
+          uni.showToast({ title: '复制失败', icon: 'none', duration: 2000 })
+        }
       })
-    },
-    fail: () => {
-      uni.showToast({
-        title: '复制失败',
-        icon: 'none',
-        duration: 2000
-      })
+      lastTap.value = null
+      return
     }
-  })
-}
+  
+    // 单击：延迟执行跳转（等待可能出现的双击）
+    if (tapTimeout) {
+      clearTimeout(tapTimeout)
+    }
+  
+    tapTimeout = setTimeout(() => {
+      // *.webvpn 深链：先 WebVPN 门户登录，再进目标页（与课表导入同逻辑）
+      openCampusWeb(item.url, { title: item.name })
+      lastTap.value = null
+      tapTimeout = null
+    }, 300)
+  
+    lastTap.value = { item, time: now }
+  }
 </script>
 
 
@@ -117,7 +147,7 @@ const moreFunctions = ref([
   min-height: 100vh;
   background-color: #f5f5f5;
   padding: 32rpx;
-  padding-bottom: 160rpx; // 为底部导航栏留出空间
+  padding-bottom: 32rpx;
   box-sizing: border-box;
 }
 

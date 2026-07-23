@@ -43,14 +43,11 @@
         </button>
       </view>
     </view>
-
-    <TabBar :current="1" />
   </view>
 </template>
 
 <script setup>
 import { reactive } from 'vue'
-import TabBar from '@/components/TabBar.vue' 
 
 // 表单数据
 const formData = reactive({
@@ -119,8 +116,8 @@ const handleLogin = () => {
           }
 
           setTimeout(() => {
-            // 跳转到注册成功页
-            uni.reLaunch({
+            // 跳转到登录成功页（普通页，非 Tab）
+            uni.redirectTo({
               url: '/pages/register/register'
             })
           }, 1500)
@@ -172,7 +169,7 @@ const handleLogin = () => {
 .page {
   min-height: 100vh;
   padding: 32rpx;
-  padding-bottom: 160rpx;
+  padding-bottom: 48rpx;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

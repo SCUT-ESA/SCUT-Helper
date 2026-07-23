@@ -1,258 +1,247 @@
 <template>
-	<view>
-		<view class="daily-draw" @tap="handleDailyDraw">
-			
-			<view v-if="!hasDrawn" class="draw-content-initial">
-				<view class="draw-icon">🎡</view>
-				<view class="draw-text">每日抽签</view>
-				<view class="draw-icon">🎡</view>
-			</view>
-			
-			<view v-else class="draw-content-result">
-				<view class="result-title">今日运势</view>
-				
-				<view class="result-big">§ {{ fortuneResult.level }} §</view>
-				
-				<view class="result-grid">
-					<view class="grid-col">
-						<view class="action-row yi">
-							<text class="label">宜: {{ fortuneResult.good.name }}</text>
-						</view>
-						<view class="desc">{{ fortuneResult.good.desc }}</view>
-					</view>
-					
-					<view class="grid-col">
-						<view class="action-row ji">
-							<text class="label">忌: {{ fortuneResult.bad.name }}</text>
-						</view>
-						<view class="desc">{{ fortuneResult.bad.desc }}</view>
-					</view>
-				</view>
-				
-				<view class="result-footer">
-					我的华工 · 抽到的总是最好的
-				</view>
-			</view>
+  <view class="sign-card" @tap="handleSign">
+    <!-- 未签到 -->
+    <view v-if="!hasSigned" class="sign-initial">
+      <view class="sign-icon">🎡</view>
+      <text class="sign-title">每日签到</text>
+      <view class="sign-icon">🎡</view>
+    </view>
 
-		</view>
-	</view>
+    <!-- 已签到：形象 emoji + 配语 -->
+    <view v-else class="sign-result">
+      <view class="emoji-stage">
+        <image
+          class="emoji-img"
+          :src="todayEmoji.src"
+          mode="aspectFit"
+          :lazy-load="false"
+        />
+      </view>
+      <text class="emoji-caption">{{ todayEmoji.caption }}</text>
+      <view class="sign-meta">
+        <text class="meta-days">签到累计 {{ totalDays }} 天</text>
+        <text class="meta-slogan">我的华工 · 签到的总是最好的</text>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { EMOJI_LIST } from '@/utils/artAssets.js'
 
-const hasDrawn = ref(false)
+const STORAGE_LAST_DATE = 'daily_sign_last_date'
+const STORAGE_EMOJI = 'daily_sign_emoji_v1'
+const STORAGE_TOTAL_DAYS = 'daily_sign_total_days'
 
-// 1. 定义运势结果容器
-const fortuneResult = ref({
-	level: '',
-	good: { name: '', desc: '' },
-	bad: { name: '', desc: '' }
+const hasSigned = ref(false)
+const totalDays = ref(0)
+const todayEmoji = ref({
+  index: 0,
+  src: '/static/00.emoji/00.jpg',
+  caption: ''
 })
 
-// 2. 运势等级配置（带权重）
-const fortuneLevels = [
-    { level: '大大吉', weight: 8 },
-    { level: '大吉', weight: 9 },
-    { level: '中吉', weight: 15 },
-    { level: '小吉', weight: 22 },
-    { level: '平', weight: 15 },
-    { level: '小寄', weight: 10 },
-    { level: '中寄', weight: 11 },
-    { level: '大寄', weight: 5 },
-    { level: '大大寄', weight: 5 }
-]
-
-// 3.活动库
-// weight: 被抽中的概率权重
-// desc_good: 作为"宜"时的描述（积极）
-// desc_bad: 作为"忌"时的描述（消极）
-const activities = [
-	// 学习类
-	{ name: '去图书馆', weight: 5, desc_good: '空位置等着你', desc_bad: '座位难抢，昏昏欲睡' },
-	{ name: '做作业', weight: 8, desc_good: '雷霆完成，继续CS', desc_bad: '题海淹没，怀疑人生' },
-	{ name: '复习', weight: 6, desc_good: '过目不忘', desc_bad: '手机太好玩了，哈哈' },
-	{ name: '听课', weight: 8, desc_good: '我听懂了！', desc_bad: '来了但忘记签到' },
-	
-	// 生活类 
-	{ name: '早睡早起', weight: 8, desc_good: '精神小伙', desc_bad: '大熊猫' },
-	{ name: '出去溜溜', weight: 10, desc_good: '一路顺风', desc_bad: '同样一路顺风' },
-	
-	// 饮食类
-	{ name: '喝奶茶', weight: 12, desc_good: '甜甜的，美美的', desc_bad: '防御塔已锁定' },
-	{ name: '点外卖', weight: 12, desc_good: '便宜，准时，好吃', desc_bad: '被偷了，嘿嘿' },
-	
-	// 社交娱乐类
-	{ name: '约会', weight: 6, desc_good: '桃花朵朵，心动瞬间', desc_bad: '尬聊，分手' },
-	{ name: '打游戏', weight: 15, desc_good: '超神上分', desc_bad: '连跪掉分，人机队友' },
-	{ name: '看电影', weight: 4, desc_good: '豪看', desc_bad: '全场就你一个单身狗' },
-	{ name: 'KTV', weight: 8, desc_good: '不要掌声，只要尖叫', desc_bad: '自己人别开腔' },
-	
-	// 特殊类
-	{ name: '摸鱼', weight: 4, desc_good: '美哉,爽之', desc_bad: 'ddl像狗一样追着咬' },
-	{ name: '逃课', weight: 8, desc_good: '老师不会点名', desc_bad: '点名签到，分数没了' },
-	{ name: '表白', weight: 5, desc_good: '么么哒', desc_bad: '我是小丑' },
-	{ name: '抽卡', weight: 13, desc_good: '欧皇竟是我自己', desc_bad: '非酋本酋' }
-]
-
-// 4. 算法：带权重的随机抽取
-const getWeightedRandom = (list, isActivity = false) => {
-	// 计算总权重
-	const totalWeight = list.reduce((sum, item) => sum + item.weight, 0)
-	let random = Math.random() * totalWeight
-	
-	for (const item of list) {
-		random -= item.weight
-		if (random <= 0) {
-			if (isActivity) {
-				return item  // 返回整个对象，包含 name/desc_good/desc_bad
-			}
-			return item.level
-		}
-	}
-	return isActivity ? list[0] : list[0].level
+const getTodayDate = () => {
+  const d = new Date()
+  const year = d.getFullYear()
+  const month = (d.getMonth() + 1).toString().padStart(2, '0')
+  const day = d.getDate().toString().padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
-// 5. 处理点击抽签
-const handleDailyDraw = () => {
-	if (hasDrawn.value) return 
-	
-	uni.showLoading({ title: '请等待...', mask: true })
-	
-	setTimeout(() => {
-		// A. 算出运势等级
-		const level = getWeightedRandom(fortuneLevels)
-		
-		// B. 权重随机取"宜"
-		const goodItem = getWeightedRandom(activities, true)
-		
-		// C. 权重随机取"忌"（不能和宜一样）
-		let badItem = getWeightedRandom(activities, true)
-		let safetyCounter = 0 // 防止死循环
-		while (badItem.name === goodItem.name && safetyCounter < 50) {
-			badItem = getWeightedRandom(activities, true)
-			safetyCounter++
-		}
-		
-		// D. 赋值（根据宜/忌选择对应描述）
-		fortuneResult.value = {
-			level: level,
-			good: {
-				name: goodItem.name,
-				desc: goodItem.desc_good  // 宜用 desc_good
-			},
-			bad: {
-				name: badItem.name,
-				desc: badItem.desc_bad     // 忌用 desc_bad
-			}
-		}
-		
-		hasDrawn.value = true
-		uni.hideLoading()
-	}, 800)
+const pickRandomEmoji = () => {
+  const list = EMOJI_LIST || []
+  if (!list.length) {
+    return { index: 0, src: '/static/00.emoji/00.jpg', caption: '' }
+  }
+  const item = list[Math.floor(Math.random() * list.length)]
+  return {
+    index: item.index,
+    src: item.src,
+    caption: item.caption || ''
+  }
+}
+
+const applyEmoji = (data) => {
+  if (!data || typeof data.index !== 'number') return false
+  const fromList = EMOJI_LIST[data.index]
+  todayEmoji.value = {
+    index: data.index,
+    src: (fromList && fromList.src) || data.src || '/static/00.emoji/00.jpg',
+    caption: (fromList && fromList.caption) || data.caption || ''
+  }
+  return true
+}
+
+/** 真正「今日已签到」= 日期是今天 且 已有新版 emoji 结果 */
+const isTodaySignedComplete = () => {
+  try {
+    const lastDate = uni.getStorageSync(STORAGE_LAST_DATE) || ''
+    if (lastDate !== getTodayDate()) return false
+    const saved = uni.getStorageSync(STORAGE_EMOJI)
+    return !!(saved && typeof saved.index === 'number')
+  } catch (_) {
+    return false
+  }
+}
+
+try {
+  totalDays.value = uni.getStorageSync(STORAGE_TOTAL_DAYS) || 0
+  if (isTodaySignedComplete()) {
+    const saved = uni.getStorageSync(STORAGE_EMOJI)
+    if (applyEmoji(saved)) hasSigned.value = true
+  }
+} catch (e) {
+  console.error('读取签到状态失败', e)
+}
+
+const handleSign = () => {
+  if (hasSigned.value) return
+
+  // 完整签到才拦截；仅有旧版日期、没有 emoji 时允许补签
+  if (isTodaySignedComplete()) {
+    const saved = uni.getStorageSync(STORAGE_EMOJI)
+    if (applyEmoji(saved)) hasSigned.value = true
+    uni.showToast({ title: '今天已经签到过了', icon: 'none' })
+    return
+  }
+
+  const today = getTodayDate()
+  // 旧运势今天已写过日期：补签时不再重复累加天数
+  const hadLegacyDateToday = (uni.getStorageSync(STORAGE_LAST_DATE) || '') === today
+
+  uni.showLoading({ title: '签到中', mask: true })
+
+  setTimeout(() => {
+    const picked = pickRandomEmoji()
+    todayEmoji.value = picked
+
+    try {
+      uni.setStorageSync(STORAGE_LAST_DATE, today)
+      uni.setStorageSync(STORAGE_EMOJI, picked)
+      if (!hadLegacyDateToday) {
+        totalDays.value += 1
+        uni.setStorageSync(STORAGE_TOTAL_DAYS, totalDays.value)
+      }
+    } catch (e) {
+      console.error('保存签到状态失败', e)
+    }
+
+    hasSigned.value = true
+    uni.hideLoading()
+  }, 800)
 }
 </script>
 
 <style lang="scss" scoped>
-	/* 保持原样，未做修改 */
-	.daily-draw {
-	  background: linear-gradient(135deg, #b794f6 0%, #9f7aea 100%);
-	  border-radius: 32rpx;
-	  padding: 48rpx;
-	  margin-bottom: 48rpx;
-	  display: flex;
-	  align-items: center;
-	  justify-content: center;
-	  box-shadow: 0 8rpx 24rpx rgba(183, 148, 246, 0.3);
-	  min-height: 200rpx;
-	  transition: all 0.3s ease;
-	}
-	
-	.draw-content-initial {
-			display: flex;
-			align-items: center;
-			gap: 40rpx;  /* 增加间距 */
-			width: 100%;
-			justify-content: center;
-		}
-	
-		.draw-icon {
-		  width: 80rpx;  /* 增加宽度 */
-		  height: 80rpx;  /* 增加高度 */
-		  background: rgba(255, 255, 255, 0.3);
-		  border-radius: 50%;
-		  display: flex;
-		  align-items: center;
-		  justify-content: center;
-		  font-size: 48rpx;  /* 增加图标字体大小 */
-		}
-		
-		.draw-text {
-		  color: #fff;
-		  font-size: 48rpx;  /* 增加文字大小 */
-		  font-weight: 600;
-		  letter-spacing: 2rpx;  /* 增加字间距，使文字更清晰 */
-		}
+/* 白底卡片，天蓝边框贴最外侧 */
+.sign-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 28rpx;
+  margin-bottom: 48rpx;
+  min-height: 200rpx;
+  overflow: hidden;
+  box-sizing: border-box;
+  /* 左右外侧天蓝竖边，上下保持细浅线 */
+  border-style: solid;
+  border-color: #e8eef3 #7ec8e8;
+  border-width: 1px 10rpx;
+  box-shadow: 0 6rpx 20rpx rgba(126, 200, 232, 0.12);
+}
 
+/* 未签到 */
+.sign-initial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 36rpx;
+  padding: 52rpx 40rpx;
+  min-height: 200rpx;
+  box-sizing: border-box;
+}
 
-	.draw-content-result {
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		color: #fff;
-	}
+.sign-icon {
+  width: 80rpx;
+  height: 80rpx;
+  background: rgba(126, 200, 232, 0.12);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  flex-shrink: 0;
+}
 
-	.result-title {
-		font-size: 28rpx;
-		opacity: 0.9;
-		margin-bottom: 10rpx;
-	}
+.sign-title {
+  color: #1e293b;
+  font-size: 48rpx;
+  font-weight: 600;
+  letter-spacing: 4rpx;
+  line-height: 1.2;
+}
 
-	.result-big {
-		font-size: 80rpx;
-		font-weight: bold;
-		margin: 10rpx 0 30rpx 0;
-		color: #fff;
-		text-shadow: 0 4rpx 8rpx rgba(0,0,0,0.1); 
-	}
+/* 已签到 */
+.sign-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36rpx 40rpx 32rpx;
+  box-sizing: border-box;
+}
 
-	.result-grid {
-		display: flex;
-		justify-content: space-between;
-		width: 100%;
-		margin-bottom: 30rpx;
-		padding: 0 20rpx;
-	}
+.emoji-stage {
+  width: 378rpx;
+  height: 378rpx;
+  border-radius: 28rpx;
+  background: #f7fafc;
+  border: 1px solid #e8eef3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 28rpx;
+}
 
-	.grid-col {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
+.emoji-img {
+  width: 92%;
+  height: 92%;
+  display: block;
+}
 
-	.action-row {
-		font-size: 32rpx;
-		font-weight: 600;
-		margin-bottom: 8rpx;
-	}
+.emoji-caption {
+  display: block;
+  width: 100%;
+  font-size: 38rpx;
+  font-weight: 600;
+  line-height: 1.6;
+  color: #334155;
+  text-align: center;
+  margin-bottom: 28rpx;
+  padding: 0 8rpx;
+  box-sizing: border-box;
+}
 
-	.yi { color: #ffd1d1; }
-	.ji { color: #e2e8f0; }
+.sign-meta {
+  width: 100%;
+  padding-top: 20rpx;
+  border-top: 1px solid #e8eef3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+}
 
-	.desc {
-		font-size: 24rpx;
-		opacity: 0.8;
-	}
+.meta-days {
+  font-size: 32rpx;
+  color: #529bcc;
+  font-weight: 600;
+}
 
-	.result-footer {
-		font-size: 24rpx;
-		opacity: 0.6;
-		margin-top: 10rpx;
-		border-top: 1px solid rgba(255,255,255,0.2);
-		padding-top: 16rpx;
-		width: 80%;
-		text-align: center;
-	}
+.meta-slogan {
+  font-size: 30rpx;
+  color: #94a3b8;
+  text-align: center;
+}
 </style>

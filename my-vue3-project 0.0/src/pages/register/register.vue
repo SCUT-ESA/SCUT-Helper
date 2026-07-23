@@ -23,14 +23,11 @@
         </button>
       </view>
     </view>
-
-    <TabBar :current="1" />
   </view>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import TabBar from '@/components/TabBar.vue'
 
 // 创建响应式变量存储用户名
 const username = ref('')
@@ -58,8 +55,8 @@ const switchToLogin = () => {
     uni.removeStorageSync('userInfo')
     uni.removeStorageSync('token')
     
-    uni.reLaunch({
-      url: '../login/login'
+    uni.redirectTo({
+      url: '/pages/login/login'
     })
   } catch (err) {
     console.error('跳转失败', err)
@@ -73,7 +70,7 @@ const switchToLogin = () => {
 .page {
   min-height: 100vh;
   padding: 32rpx;
-  padding-bottom: 160rpx;
+  padding-bottom: 48rpx;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
